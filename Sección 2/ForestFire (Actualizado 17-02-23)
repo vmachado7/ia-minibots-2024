@@ -8,18 +8,19 @@ from matplotlib import colors
 ##Este codigo necesita correr en una instancia independiente de python para ver la animación.########
 #####################################################################################################
 
-# Displacements from a cell to its eight nearest neighbours
+# Define lo que son los "vecinos" de cualquier celda de arbol o fuego.
+# Vacio = 0, Arbol = 1, Fuego = 2
 neighbourhood = ((-1,-1), (-1,0), (-1,1), (0,-1), (0, 1), (1,-1), (1,0), (1,1))
 EMPTY, TREE, FIRE = 0, 1, 2
-# Colours for visualization: brown for EMPTY, dark green for TREE and orange
-# for FIRE.
+
+# Colores: Café para celda vacia, Verde para arbol, Naranja para fuego.
 colors_list = [(0.2,0,0), (0,0.5,0), (1,0,0), 'orange']
 cmap = colors.ListedColormap(colors_list)
 bounds = [0,1,2,3]
 norm = colors.BoundaryNorm(bounds, cmap.N)
 
 def iterate(X):
-    """Iterate the forest according to the forest-fire rules."""
+    """Reglas de iteración de vecinos para el fuego forestal."""
     X1 = np.zeros((ny, nx))
     for ix in range(1,nx-1):
         for iy in range(1,ny-1):
@@ -38,13 +39,12 @@ def iterate(X):
                         X1[iy,ix] = FIRE
     return X1
 
-# The initial fraction of the forest occupied by trees.
+# Factor de nuestro "bosque" la cual esta ocupada por arboles.
 forest_fraction = 0.2
-# Probability of new tree growth per empty cell, and of lightning strike.
+# Probabilidad del crecimiento de arbol en una celda aleatoria
 p, f = 0.05, 0.0001
-# Forest size (number of cells in x and y directions).
+# Tamaño del bosque.
 nx, ny = 100, 100
-# Initialize the forest grid.
 X  = np.zeros((ny, nx))
 X[1:ny-1, 1:nx-1] = np.random.randint(0, 2, size=(ny-2, nx-2))
 X[1:ny-1, 1:nx-1] = np.random.random(size=(ny-2, nx-2)) < forest_fraction
@@ -54,16 +54,14 @@ ax = fig.add_subplot(111)
 ax.set_axis_off()
 im = ax.imshow(X, cmap=cmap, norm=norm)#, interpolation='nearest')
 
-# The animation function: called to produce a frame for each generation.
+# Generación de cada cuadro, responsable de la animación
 def animate(i):
     im.set_data(animate.X)
     animate.X = iterate(animate.X)
-# Bind our grid to the identifier X in the animate function's namespace.
 animate.X = X
-
-# Interval between frames (ms) for 2 frames per second.
 interval = 1000  # 500 ms per frame
-# Number of frames (steps) to simulate.
+
+# Numeor de iteraciones.
 frames = 200
 anim = animation.FuncAnimation(fig, animate, interval=interval, frames=frames)
 plt.show()
