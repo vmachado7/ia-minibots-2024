@@ -1,0 +1,2 @@
+Debido a la ausencia y/o falencias de algunas de las funciones, se modifican dichas funciones y varía el número de generaciones, por lo que se hacen algunos ajustes y, además, se hace la impresión de gráficas:
+https://colab.research.google.com/drive/1suYmPS3Piy-AJYpc7kkR8_nd-XvRNpC-?usp=sharing
